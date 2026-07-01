@@ -1,0 +1,43 @@
+{
+  "id": "00_gate",
+  "badge": "〇",
+  "palette": "ink",
+  "camera": { "azimuthDeg": 45, "elevationDeg": 35.264 },
+
+  "geometry": [
+    { "block": "cube", "pos": [-4, 1, 0], "size": [3, 2, 3], "material": "stone" },
+    { "block": "cube", "pos": [4, 1, 0], "size": [3, 2, 3], "material": "stone" },
+    { "block": "slab", "pos": [-4, 2.15, 0], "size": [3, 0.3, 3], "material": "stoneTop" },
+    { "block": "slab", "pos": [4, 2.15, 0], "size": [3, 0.3, 3], "material": "stoneTop" }
+  ],
+
+  "mechanisms": [
+    {
+      "id": "arch",
+      "type": "rotate",
+      "geometry": [
+        { "block": "slab", "pos": [0, 2, 0], "size": [5, 0.4, 1.4], "material": "wood" },
+        { "block": "arch", "pos": [0, 3.6, 0], "size": [3, 2.6, 1], "material": "stone" }
+      ],
+      "pivot": [0, 2, 0],
+      "axis": "y",
+      "states": [90, 0],
+      "initial": 90,
+      "handle": { "pos": [0, 5.4, 0] }
+    }
+  ],
+
+  "nodes": [
+    { "id": "start", "pos": [-4, 2.3, 0] },
+    { "id": "mid", "pos": [-2.3, 2.3, 0] },
+    { "id": "exit", "pos": [4, 2.3, 0] }
+  ],
+
+  "edges": [
+    { "a": "start", "b": "mid", "requires": {} },
+    { "a": "mid", "b": "exit", "requires": { "arch": 0 } }
+  ],
+
+  "start": "start",
+  "exit": "exit"
+}
