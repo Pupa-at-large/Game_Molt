@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>轻安 · Molt</title>
+    <style>
+      :root {
+        --ink: #1b1a1f;
+        --cinnabar: #c8442f;
+        --paper: #efe9dc;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 100%; height: 100%; overflow: hidden; background: var(--ink); }
+      #app { width: 100vw; height: 100vh; position: relative; }
+      canvas { display: block; }
+
+      /* --- 顶部：关卡标题 / 匾额 --- */
+      #chapter {
+        position: absolute; top: 0; left: 0; right: 0;
+        padding: 24px; text-align: center;
+        font-family: "Songti SC", "SimSun", "Noto Serif SC", serif;
+        color: var(--paper); pointer-events: none;
+        text-shadow: 0 2px 12px rgba(0,0,0,.5);
+        opacity: 0; transition: opacity 1.2s ease;
+      }
+      #chapter.show { opacity: 1; }
+      #chapter .zi {
+        font-size: 46px; letter-spacing: .35em; font-weight: 600;
+        display: inline-block; padding: 6px 20px;
+      }
+      #chapter .sub { font-size: 15px; opacity: .6; letter-spacing: .3em; margin-top: 6px; }
+
+      /* --- 底部：提示 --- */
+      #hint {
+        position: absolute; bottom: 28px; left: 0; right: 0; text-align: center;
+        font-family: "Songti SC", "Noto Serif SC", serif; color: var(--paper);
+        font-size: 15px; letter-spacing: .18em; opacity: 0; transition: opacity .8s ease;
+        pointer-events: none; text-shadow: 0 1px 8px rgba(0,0,0,.6);
+      }
+      #hint.show { opacity: .72; }
+
+      /* --- 胜利 / 结局印章 --- */
+      #win {
+        position: absolute; inset: 0; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 20px;
+        background: rgba(239,233,220,0); pointer-events: none;
+        opacity: 0; transition: opacity 1.6s ease, background 1.6s ease;
+      }
+      #win.show { opacity: 1; pointer-events: auto; }
+      #win .seal {
+        width: 96px; height: 96px; border-radius: 10px;
+        background: var(--cinnabar);
+        display: flex; align-items: center; justify-content: center;
+        font-family: "Songti SC", serif; font-size: 42px; color: var(--paper);
+        box-shadow: 0 8px 40px rgba(200,68,47,.5);
+        transform: scale(.4) rotate(-12deg); transition: transform 1s cubic-bezier(.2,1.4,.4,1);
+      }
+      #win.show .seal { transform: scale(1) rotate(-8deg); }
+      #win .msg { font-family: "Songti SC", serif; font-size: 20px; letter-spacing: .3em; }
+      #win .next {
+        pointer-events: auto; cursor: pointer; margin-top: 8px;
+        font-family: "Songti SC", serif; font-size: 15px; letter-spacing: .22em;
+        color: var(--ink); border: 1px solid rgba(27,26,31,.35);
+        padding: 10px 26px; border-radius: 4px; background: rgba(255,255,255,.25);
+        transition: background .3s;
+      }
+      #win .next:hover { background: rgba(255,255,255,.55); }
+
+      /* --- 关卡选择（山） --- */
+      #menu {
+        position: absolute; inset: 0; z-index: 20;
+        background: radial-gradient(120% 90% at 50% 20%, #2a2833 0%, #16151a 70%);
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        font-family: "Songti SC", "Noto Serif SC", serif; color: var(--paper);
+      }
+      #menu h1 { font-size: 68px; letter-spacing: .5em; font-weight: 600; margin-left: .5em; }
+      #menu .en { font-size: 16px; letter-spacing: .6em; opacity: .45; margin: 10px 0 4px; }
+      #menu .tag { font-size: 13px; letter-spacing: .25em; opacity: .4; margin-bottom: 44px; max-width: 520px; text-align: center; line-height: 2; }
+      #menu .levels { display: flex; flex-direction: column-reverse; gap: 12px; align-items: center; }
+      #menu .lvl {
+        cursor: pointer; font-size: 18px; letter-spacing: .3em; opacity: .8;
+        padding: 8px 30px; border: 1px solid rgba(239,233,220,.14); border-radius: 3px;
+        transition: all .3s; min-width: 220px; text-align: center;
+      }
+      #menu .lvl:hover { opacity: 1; border-color: var(--cinnabar); color: #f4d9cf; }
+      #menu .lvl .n { color: var(--cinnabar); margin-right: .8em; }
+      #menu .foot { position: absolute; bottom: 22px; font-size: 12px; letter-spacing: .2em; opacity: .3; }
+
+      /* --- 关内 HUD 左上：返回 --- */
+      #back {
+        position: absolute; top: 20px; left: 20px; z-index: 10; cursor: pointer;
+        font-family: "Songti SC", serif; font-size: 14px; letter-spacing: .2em;
+        color: var(--paper); opacity: .5; transition: opacity .3s; user-select: none;
+      }
+      #back:hover { opacity: 1; }
+
+      /* --- debug 叠层开关 --- */
+      #dbg {
+        position: absolute; top: 20px; right: 20px; z-index: 10; cursor: pointer;
+        font-family: monospace; font-size: 12px; color: var(--paper); opacity: .35;
+        user-select: none;
+      }
+      #dbg:hover { opacity: .8; }
+      .hidden { display: none !important; }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div id="chapter"><span class="zi"></span><div class="sub"></div></div>
+      <div id="hint"></div>
+      <div id="back">← 山门</div>
+      <div id="dbg">debug</div>
+      <div id="win">
+        <div class="seal">安</div>
+        <div class="msg"></div>
+        <div class="next">继续 →</div>
+      </div>
+      <div id="menu">
+        <div class="en">MOLT</div>
+        <h1>轻安</h1>
+        <div class="tag">为学日益，为道日损。损之又损，以至于无为。</div>
+        <div class="levels"></div>
+        <div class="foot">纵向切片原型 · 点击进入 / 拖拽机关 / 点亮处行走</div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

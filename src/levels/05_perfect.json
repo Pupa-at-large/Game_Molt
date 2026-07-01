@@ -1,0 +1,52 @@
+{
+  "id": "05_perfect",
+  "badge": "五",
+  "palette": "celadon",
+  "camera": { "azimuthDeg": 45, "elevationDeg": 35.264 },
+
+  "geometry": [
+    { "block": "cube", "pos": [-4.5, 1, 0], "size": [2.5, 2, 3], "material": "stone" },
+    { "block": "slab", "pos": [-4.5, 2.15, 0], "size": [2.5, 0.3, 3], "material": "stoneTop" },
+    { "block": "cube", "pos": [4.5, 1, 0], "size": [2.5, 2, 3], "material": "stone" },
+    { "block": "slab", "pos": [4.5, 2.15, 0], "size": [2.5, 0.3, 3], "material": "stoneTop" },
+
+    { "block": "slab", "pos": [-2, 2.3, 0], "size": [2, 0.35, 1.4], "material": "wood" },
+    { "block": "slab", "pos": [2, 2.3, 0], "size": [2, 0.35, 1.4], "material": "wood" },
+    { "block": "cube", "pos": [-3, 3.8, 0], "size": [0.6, 3, 1.4], "material": "stone" },
+    { "block": "cube", "pos": [3, 3.8, 0], "size": [0.6, 3, 1.4], "material": "stone" }
+  ],
+
+  "mechanisms": [
+    {
+      "id": "ring",
+      "type": "rotate",
+      "geometry": [
+        { "block": "slab", "pos": [0, 5.2, 0], "size": [4.6, 0.5, 1.4], "material": "wood" },
+        { "block": "cube", "pos": [0, 4.6, 0], "size": [1.2, 0.8, 1.4], "material": "accent" }
+      ],
+      "pivot": [0, 5.2, 0],
+      "axis": "z",
+      "states": [0, 24],
+      "initial": 0,
+      "handle": { "pos": [0, 4.3, 0] }
+    }
+  ],
+
+  "nodes": [
+    { "id": "start", "pos": [-4.5, 2.3, 0] },
+    { "id": "l1", "pos": [-2, 2.5, 0] },
+    { "id": "top", "pos": [0, 5.5, 0] },
+    { "id": "r1", "pos": [2, 2.5, 0] },
+    { "id": "exit", "pos": [4.5, 2.3, 0] }
+  ],
+
+  "edges": [
+    { "a": "start", "b": "l1", "requires": {} },
+    { "a": "l1", "b": "top", "requires": { "ring": 24 }, "seam": true },
+    { "a": "top", "b": "r1", "requires": { "ring": 24 }, "seam": true },
+    { "a": "r1", "b": "exit", "requires": {} }
+  ],
+
+  "start": "start",
+  "exit": "exit"
+}

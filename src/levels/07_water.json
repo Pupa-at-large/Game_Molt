@@ -1,0 +1,50 @@
+{
+  "id": "07_water",
+  "badge": "七",
+  "palette": "white",
+  "camera": { "azimuthDeg": 45, "elevationDeg": 35.264 },
+  "ending": false,
+
+  "geometry": [
+    { "block": "cube", "pos": [-4.5, 1, 0], "size": [3, 2, 3], "material": "stone" },
+    { "block": "slab", "pos": [-4.5, 2.15, 0], "size": [3, 0.3, 3], "material": "stoneTop" },
+    { "block": "cube", "pos": [0, 0.6, 0], "size": [3, 1.2, 3], "material": "stone" },
+    { "block": "slab", "pos": [0, 1.35, 0], "size": [3, 0.3, 3], "material": "stoneTop" },
+    { "block": "cube", "pos": [4.5, 1.4, 0], "size": [3, 2.8, 3], "material": "stone" },
+    { "block": "slab", "pos": [4.5, 2.95, 0], "size": [3, 0.3, 3], "material": "stoneTop" },
+
+    { "block": "slab", "pos": [-2.3, 1.7, 0], "size": [2, 0.35, 1.2], "material": "wood" },
+    { "block": "slab", "pos": [2.3, 2.3, 0], "size": [2, 0.35, 1.2], "material": "wood" }
+  ],
+
+  "mechanisms": [
+    {
+      "id": "wheel",
+      "type": "rotate",
+      "geometry": [
+        { "block": "cube", "pos": [0, 3.6, 0], "size": [0.4, 2.6, 0.4], "material": "wood" },
+        { "block": "cube", "pos": [0, 3.6, 0], "size": [2.6, 0.4, 0.4], "material": "wood" },
+        { "block": "cube", "pos": [1.1, 3.6, 0], "size": [0.5, 0.5, 0.6], "material": "accent" }
+      ],
+      "pivot": [0, 3.6, 0],
+      "axis": "z",
+      "states": [0, 90, 180, 270],
+      "initial": 0,
+      "handle": { "pos": [1.1, 3.6, 0.6] }
+    }
+  ],
+
+  "nodes": [
+    { "id": "start", "pos": [-4.5, 2.3, 0] },
+    { "id": "mid", "pos": [0, 1.5, 0] },
+    { "id": "exit", "pos": [4.5, 3.1, 0] }
+  ],
+
+  "edges": [
+    { "a": "start", "b": "mid", "requires": { "wheel": 0 }, "seam": true },
+    { "a": "mid", "b": "exit", "requires": { "wheel": 0 }, "seam": true }
+  ],
+
+  "start": "start",
+  "exit": "exit"
+}

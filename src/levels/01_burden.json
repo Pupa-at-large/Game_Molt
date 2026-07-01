@@ -1,0 +1,49 @@
+{
+  "id": "01_burden",
+  "badge": "一",
+  "palette": "ink",
+  "camera": { "azimuthDeg": 45, "elevationDeg": 35.264 },
+
+  "geometry": [
+    { "block": "cube", "pos": [-5, 0.5, 0], "size": [3, 3, 3], "material": "stone" },
+    { "block": "slab", "pos": [-5, 2.15, 0], "size": [3, 0.3, 3], "material": "stoneTop" },
+    { "block": "cube", "pos": [0, 0.5, 0], "size": [2.6, 3, 2.6], "material": "stone" },
+    { "block": "slab", "pos": [0, 2.15, 0], "size": [2.6, 0.3, 2.6], "material": "stoneTop" },
+    { "block": "cube", "pos": [5, 2, 0], "size": [3, 6, 3], "material": "stone" },
+    { "block": "slab", "pos": [5, 5.15, 0], "size": [3, 0.3, 3], "material": "stoneTop" }
+  ],
+
+  "mechanisms": [
+    {
+      "id": "weight",
+      "type": "rotate",
+      "geometry": [
+        { "block": "slab", "pos": [2.7, 3.2, 0], "size": [3.4, 0.4, 1.6], "material": "wood" },
+        { "block": "cube", "pos": [1.5, 3.7, 0], "size": [1, 1, 1.2], "material": "accent" }
+      ],
+      "pivot": [2.7, 2.3, 0],
+      "axis": "z",
+      "states": [0, 55],
+      "initial": 0,
+      "handle": { "pos": [1.5, 4.4, 0] }
+    }
+  ],
+
+  "nodes": [
+    { "id": "start", "pos": [-5, 2.3, 0] },
+    { "id": "mid", "pos": [0, 2.3, 0] },
+    { "id": "lift", "pos": [2.7, 3.3, 0] },
+    { "id": "exit", "pos": [5, 5.3, 0] }
+  ],
+
+  "edges": [
+    { "a": "start", "b": "mid", "requires": { "weight": 0 } },
+    { "a": "mid", "b": "lift", "requires": { "weight": 55 }, "seam": true },
+    { "a": "lift", "b": "exit", "requires": { "weight": 55 } }
+  ],
+
+  "start": "start",
+  "exit": "exit",
+
+  "script": { "dropOnNode": { "mid": 0, "exit": 1 } }
+}
